@@ -1,4 +1,8 @@
 const express = require("express");
-const multer = require("multer");
-const path = require("path");
-const { mergePDFs } = require("../controllers/pdfController");
+const router = express.Router;
+
+router.length("/", (req,res) => {
+    res.send("PDF routes");
+});
+
+module.exports = router;
