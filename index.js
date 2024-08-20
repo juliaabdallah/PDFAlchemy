@@ -2,7 +2,7 @@ const express = require("express");
 const multer = require("multer");
 const path = require("path");
 const { mergePDFs } = require("./controllers/pdfController");
-const connectDB = require("./database");
+const connectDB = require("./database"); // Ensure this is the correct path and name
 
 // Load environment variables
 require("dotenv").config();
@@ -15,6 +15,11 @@ connectDB();
 // Middleware
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public"))); // Serve static files from 'public'
+
+// Serve index.html from the public directory
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 
 // Updated multer configuration to save in public/merged-pdfs
 const storage = multer.diskStorage({

@@ -24,7 +24,7 @@ exports.mergePDFs = async (req, res) => {
     // Save the merged PDF
     await merger.save(outputFilePath);
 
-    // Optionally, you could redirect to the history.html or send a response
+    // Respond with a success message and file path
     res.status(200).json({
       message: "PDFs merged successfully",
       filePath: `/merged-pdfs/${path.basename(outputFilePath)}`,

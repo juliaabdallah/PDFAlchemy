@@ -1,17 +1,16 @@
 const mongoose = require("mongoose");
-const dotenv = require("dotenv");
-
-dotenv.config(); // Load environment variables from .env file
+require("dotenv").config(); // Ensure dotenv is loaded before using process.env
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.DATABASE_URL, {
-      useNewUrlParser: true, //to avoid future warnings
-      useUnifiedTopology: true, //same
-    });
-    console.log("MongoDB connected !!");
-  } catch (error) {
-    console.error("Database connection error:", error);
+    const uri = process.env.MongoDB_URI;
+    if (!uri) {
+      throw new Error("MongoDB_URI is not defined in .env file");
+    }
+    await mongoose.connect(uri);
+    console.log("MongoDB connected !");
+  } catch (err) {
+    console.error(err);
     process.exit(1);
   }
 };
