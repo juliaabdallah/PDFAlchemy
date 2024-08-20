@@ -1,0 +1,80 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #fefeff;
+    color: #d3ab9e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+h1 {
+    font-size: 3em;
+    text-align: center;
+    color: #d3ab9e;
+    margin-bottom: 20px;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px #ebd8d0;
+}
+
+.container {
+    text-align: center;
+    background-color: #fffbff;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    width: 600px;
+}
+
+#files {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.label-file {
+    display: inline-block;
+    padding: 15px 25px;
+    border-radius: 8px;
+    font-size: 1.2em;
+    color: #ffffff;
+    background-color: #d3ab9e;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.label-file:hover {
+    background-color: #eac9c1;
+}
+
+#file-chosen {
+    font-size: 1em;
+    color: #d3ab9e;
+}
+
+button {
+    padding: 15px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.2em;
+    font-weight: 700;
+    color: #ffffff;
+    background-color: #eac9c1;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #d3ab9e;
+}
+
+#message {
+    margin-top: 20px;
+    font-size: 1.1em;
+    color: #d3ab9e;
+}
