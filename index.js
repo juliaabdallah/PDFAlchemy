@@ -3,7 +3,7 @@ const express = require("express");
 const multer = require("multer"); // specifically for handling file uploads
 const path = require("path"); // path kamen it like manipulates the file url so comes in handy for joining
 
-const connectDB = require("./database");
+const connectDB = require("./database.js");
 
 // Load environment variables
 require("dotenv").config();
