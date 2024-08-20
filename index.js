@@ -3,10 +3,6 @@ const multer = require("multer");
 const path = require("path");
 const { mergePDFs } = require("./controllers/pdfController");
 const connectDB = require("./database");
-const pdfRoutes = require("./routes/pdfRouts");
-
-// Use routes
-app.use("/pdf", pdfRoutes);
 
 // Load environment variables
 require("dotenv").config();
