@@ -1,20 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PDFAlchemy</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
     <div class="container">
-        <h1 class="title">PDFAlchemy</h1>
-        <form id="pdf-merger-form" enctype="multipart/form-data">
-            <input type="file" id="file-input" name="pdfs" multiple>
-            <button type="submit" class="merge-btn">Merge PDFs</button>
-        </form>
-        <button class="history-btn">History</button>
+      <h1 class="title">PDFAlchemy</h1>
+      <form
+        id="pdf-merger-form"
+        action="/merge-pdfs"
+        method="post"
+        enctype="multipart/form-data"
+      >
+        <input type="file" id="file-input" name="pdfs" multiple />
+        <button type="submit" class="merge-btn">Merge PDFs</button>
+      </form>
+      <button class="history-btn">History</button>
     </div>
     <script src="script.js"></script>
-</body>
+  </body>
 </html>

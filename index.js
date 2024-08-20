@@ -1,10 +1,12 @@
 const express = require("express");
+const multer = require("multer");
+const path = require("path");
+const { mergePDFs } = require("./controllers/pdfController");
+const connectDB = require("./database");
+const pdfRoutes = require("./routes/pdfRouts");
 
-const multer = require("multer"); // specifically for handling file uploads
-const path = require("path"); // path kamen it like manipulates the file url so comes in handy for joining
-const history = require("./models/mergedModel.js")
-const connectDB = require("./database.js");
-
+// Use routes
+app.use("/pdf", pdfRoutes);
 
 // Load environment variables
 require("dotenv").config();
@@ -18,17 +20,20 @@ connectDB();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public"))); // Serve static files from 'public'
 
-// Routes
-app.use("/api/pdf", require("./routes/pdfRoutes"));
+// Updated multer configuration to save in public/merged-pdfs
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, "public/merged-pdfs"));
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
 
-app.get('/history', async (req,res) => {
-  try {
-    const mergedFiles = await history.find().sort('-createdAt');
-    res.render('history', {mergers});
-  } catch (err) {
-    res.status(500).send('Server Error');
-  }
-})
+const upload = multer({ storage: storage });
+
+// Route to handle PDF merging
+app.post("/merge-pdfs", upload.array("pdfs"), mergePDFs);
 
 // Start the server
 app.listen(PORT, () => {
