@@ -8,16 +8,12 @@
 </head>
 <body>
     <div class="container">
-        <h1>PDFAlchemy</h1>
-        <form id="pdf-form">
-            <label class="label-file" for="file-input">Choose Files</label>
-            <div id="files">
-                <input id="file-input" type="file" multiple>
-                <span id="file-chosen">No file chosen</span>
-            </div>
-            <button type="submit">Merge PDFs</button>
+        <h1 class="title">PDFAlchemy</h1>
+        <form id="pdf-merger-form" enctype="multipart/form-data">
+            <input type="file" id="file-input" name="pdfs" multiple>
+            <button type="submit" class="merge-btn">Merge PDFs</button>
         </form>
-        <p id="message"></p>
+        <button class="history-btn">History</button>
     </div>
     <script src="script.js"></script>
 </body>
