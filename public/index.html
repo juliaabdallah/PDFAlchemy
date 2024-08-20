@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDFAlchemy</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>PDFAlchemy</h1>
+        <form id="pdf-form">
+            <label class="label-file" for="file-input">Choose Files</label>
+            <div id="files">
+                <input id="file-input" type="file" multiple>
+                <span id="file-chosen">No file chosen</span>
+            </div>
+            <button type="submit">Merge PDFs</button>
+        </form>
+        <p id="message"></p>
+    </div>
+</body>
+</html>
