@@ -1,33 +1,42 @@
+const PDFMerger = require("pdf-merger-js");
+const path = require("path");
+const fs = require("fs");
+
 exports.mergePDFs = async (req, res) => {
   try {
-    console.log("Files received:", req.files); // Log received files
+    const merger = new PDFMerger();
 
-    const PDFMergerClass = await PDFMerger();
-    const merger = new PDFMergerClass.default();
+    // Add each file to the merger
+    req.files.forEach((file) => {
+      merger.add(file.path);
+    });
 
-    // Add each uploaded file to the merger
-    for (let i = 0; i < req.files.length; i++) {
-      console.log("Adding file to merger:", req.files[i].path);
-      await merger.add(req.files[i].path);
-    }
-
-    // Define the output path in the public/merged-pdfs directory
     const outputFilePath = path.join(
       __dirname,
-      "../public/merged-pdfs",
+      "public",
+      "merged-pdfs",
       `merged-${Date.now()}.pdf`
     );
 
-    // Save the merged PDF
+    // Save the merged file
     await merger.save(outputFilePath);
-    console.log("Merged PDF saved to:", outputFilePath);
 
-    res.status(200).json({
-      message: "PDFs merged successfully",
-      filePath: `/merged-pdfs/${path.basename(outputFilePath)}`,
+    // Send the merged file as a response to the client
+    res.download(outputFilePath, (err) => {
+      if (err) {
+        console.error("Error sending file:", err);
+        res.status(500).json({ message: "Error merging PDFs" });
+      } else {
+        // Optionally delete the file after sending
+        fs.unlink(outputFilePath, (unlinkErr) => {
+          if (unlinkErr) {
+            console.error("Error deleting merged PDF:", unlinkErr);
+          }
+        });
+      }
     });
   } catch (err) {
-    console.error("Error during PDF merge:", err); // Log any errors
+    console.error("Error during PDF merging:", err);
     res.status(500).json({ message: "Error merging PDFs" });
   }
 };

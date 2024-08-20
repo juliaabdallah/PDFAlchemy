@@ -31,23 +31,25 @@ document.addEventListener("DOMContentLoaded", function () {
       method: "POST",
       body: formData,
     })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.filePath) {
-          // Create a link element to trigger the download
-          const a = document.createElement("a");
-          a.href = data.filePath;
-          a.download = data.filePath.split("/").pop(); // Extract file name
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-          message.textContent = "PDFs merged successfully";
-        } else {
-          message.textContent = "Error merging PDFs";
+      .then((response) => {
+        console.log(response); // Add this line to inspect the response
+        if (!response.ok) {
+          throw new Error("Failed to merge PDFs");
         }
+        return response.blob(); // Expecting the file as a blob
+      })
+      .then((blob) => {
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "merged.pdf";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        message.textContent = "PDFs merged successfully";
       })
       .catch((err) => {
-        console.error(err);
+        console.error("Error:", err);
         message.textContent = "Error merging PDFs";
       });
   });
