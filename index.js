@@ -41,6 +41,7 @@ app.post("/merge-pdfs", upload.array("pdfs"), async (req, res) => {
   try {
     console.log("Files received:", req.files);
 
+    // Dynamically import pdf-merger-js
     const PDFMerger = (await import("pdf-merger-js")).default;
     const merger = new PDFMerger();
 
