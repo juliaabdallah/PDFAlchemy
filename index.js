@@ -9,6 +9,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Middleware for JSON parsing and serving static files
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -17,10 +18,16 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
+// Create the 'merged-pdfs' directory if it doesn't exist
+const mergedPdfsDir = path.join(__dirname, "public/merged-pdfs");
+if (!fs.existsSync(mergedPdfsDir)) {
+  fs.mkdirSync(mergedPdfsDir);
+}
+
 // Configure Multer to handle file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "public/merged-pdfs"));
+    cb(null, mergedPdfsDir);
   },
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}-${file.originalname}`);
@@ -43,18 +50,15 @@ app.post("/merge-pdfs", upload.array("pdfs"), async (req, res) => {
       await merger.add(file.path);
     }
 
-    const outputFilePath = path.join(
-      __dirname,
-      "public/merged-pdfs",
-      `merged-${Date.now()}.pdf`
-    );
+    const mergedFileName = `merged-${Date.now()}.pdf`;
+    const outputFilePath = path.join(mergedPdfsDir, mergedFileName);
 
     // Save the merged PDF
     await merger.save(outputFilePath);
     console.log("Merged PDF saved to:", outputFilePath);
 
     // Send the merged PDF file as a response to trigger download
-    res.download(outputFilePath, (err) => {
+    res.download(outputFilePath, mergedFileName, (err) => {
       if (err) {
         console.error("Error sending file:", err);
         res.status(500).json({ message: "Error merging PDFs" });
@@ -68,7 +72,7 @@ app.post("/merge-pdfs", upload.array("pdfs"), async (req, res) => {
       }
     });
   } catch (err) {
-    console.error("Detailed error:", err);
+    console.error("Error during PDF merging:", err);
     res.status(500).json({ message: "Error merging PDFs" });
   }
 });
