@@ -13,11 +13,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const listItem = document.createElement("div");
         listItem.className = "history-item";
         listItem.innerHTML = `
-          <p><strong>Original Files:</strong> ${item.originalFiles.join(", ")}</p>
-          <p><strong>Date:</strong> ${new Date(item.date).toLocaleString()}</p>
-          <a href="/merged-pdfs/${item.mergedFileName}" download>
-            <button>Download</button>
-          </a>
+          <p>${item.originalFiles.join(", ")}</p>
+          <p>${new Date(item.date).toLocaleString()}</p>
         `;
         historyList.appendChild(listItem);
       });
