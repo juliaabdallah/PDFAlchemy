@@ -1,28 +1,28 @@
 document.addEventListener("DOMContentLoaded", function () {
-    fetch("/get-history")
-      .then(response => response.json())
-      .then(history => {
-        const historyList = document.getElementById("history-list");
-  
-        history.forEach(item => {
-          const historyItem = document.createElement("div");
-          historyItem.classList.add("history-item");
-  
-          const fileInfo = document.createElement("p");
-          fileInfo.textContent = `Filename: ${item.filename}, Original Files: ${item.originalFiles.join(', ')}, Merged At: ${new Date(item.mergedAt).toLocaleString()}`;
-          historyItem.appendChild(fileInfo);
-  
-          const downloadButton = document.createElement("a");
-          downloadButton.href = `/public/merged-pdfs/${item.filename}`;
-          downloadButton.textContent = "Download";
-          downloadButton.classList.add("download-btn");
-          historyItem.appendChild(downloadButton);
-  
-          historyList.appendChild(historyItem);
-        });
-      })
-      .catch(err => {
-        console.error("Error fetching history:", err);
+  const historyList = document.querySelector(".history-list");
+
+  fetch("/get-history")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to fetch history");
+      }
+      return response.json();
+    })
+    .then((history) => {
+      history.forEach((item) => {
+        const listItem = document.createElement("div");
+        listItem.className = "history-item";
+        listItem.innerHTML = `
+          <p><strong>Original Files:</strong> ${item.originalFiles.join(", ")}</p>
+          <p><strong>Date:</strong> ${new Date(item.date).toLocaleString()}</p>
+          <a href="/merged-pdfs/${item.mergedFileName}" download>
+            <button>Download</button>
+          </a>
+        `;
+        historyList.appendChild(listItem);
       });
-  });
-  
+    })
+    .catch((err) => {
+      console.error("Error fetching history:", err);
+    });
+});

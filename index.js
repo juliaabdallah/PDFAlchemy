@@ -3,15 +3,27 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const dotenv = require("dotenv");
+const mongoose = require("mongoose");
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware for JSON parsing and serving static files
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
+
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI);
+
+// Define the schema for storing merge history
+const historySchema = new mongoose.Schema({
+  mergedFileName: String,
+  originalFiles: [String],
+  date: { type: Date, default: Date.now },
+});
+
+const History = mongoose.model("History", historySchema);
 
 // Serve the main HTML file
 app.get("/", (req, res) => {
@@ -41,9 +53,10 @@ app.post("/merge-pdfs", upload.array("pdfs"), async (req, res) => {
   try {
     console.log("Files received:", req.files);
 
-    // Dynamically import pdf-merger-js
     const PDFMerger = (await import("pdf-merger-js")).default;
     const merger = new PDFMerger();
+
+    const originalFiles = req.files.map(file => file.originalname);
 
     // Add each uploaded file to the merger
     for (const file of req.files) {
@@ -57,6 +70,13 @@ app.post("/merge-pdfs", upload.array("pdfs"), async (req, res) => {
     // Save the merged PDF
     await merger.save(outputFilePath);
     console.log("Merged PDF saved to:", outputFilePath);
+
+    // Save history to MongoDB
+    const historyEntry = new History({
+      mergedFileName,
+      originalFiles,
+    });
+    await historyEntry.save();
 
     // Send the merged PDF file as a response to trigger download
     res.download(outputFilePath, mergedFileName, (err) => {
@@ -75,6 +95,17 @@ app.post("/merge-pdfs", upload.array("pdfs"), async (req, res) => {
   } catch (err) {
     console.error("Error during PDF merging:", err);
     res.status(500).json({ message: "Error merging PDFs" });
+  }
+});
+
+// Handle the history request
+app.get("/get-history", async (req, res) => {
+  try {
+    const history = await History.find().sort({ date: -1 });
+    res.json(history);
+  } catch (err) {
+    console.error("Error fetching history:", err);
+    res.status(500).json({ message: "Error fetching history" });
   }
 });
 
