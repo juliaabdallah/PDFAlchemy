@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 require("dotenv").config(); // Ensure dotenv is loaded before using process.env
 
-const connectDB = async () => {
+exports.connectDB = async () => {
   try {
     const uri = process.env.MongoDB_URI;
     if (!uri) {
@@ -15,4 +15,3 @@ const connectDB = async () => {
   }
 };
 
-module.exports = connectDB;

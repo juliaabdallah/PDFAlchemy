@@ -4,17 +4,18 @@ const path = require("path");
 const fs = require("fs");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
+const db = require('./database.js').connectDB;
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+db();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI);
+
 
 // Define the schema for storing merge history
 const historySchema = new mongoose.Schema({
